@@ -159,6 +159,8 @@ class AuthService {
       if (partnerDoc.exists) {
         // 문서에서 'nickName' 값을 가져옴
         final data = partnerDoc.data();
+        String dd = data?['nickName'] ?? "";
+        print("ejlee5 getPartnerNickName : $dd");
         return data?['nickName'] ?? ""; // nickName이 없으면 빈 문자열 반환
       } else {
         return ""; // 파트너 문서가 없으면 빈 문자열 반환

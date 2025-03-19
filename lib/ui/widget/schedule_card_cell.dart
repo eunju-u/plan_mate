@@ -16,14 +16,16 @@ class ScheduleCardCell extends StatelessWidget {
     this.data,
   });
 
-  /// `creator`가 현재 사용자와 동일한지 확인하는 함수
-  Future<bool> _isCreatorCurrentUser(AuthService authService, String? creator) async {
-    if (creator == null || creator.isEmpty) return false;
+  Future<Map<String, dynamic>> _isCreatorCurrentUser(AuthService authService, String? creator) async {
+    if (creator == null || creator.isEmpty) return {'nickname': '', 'isCurrentUser': false};
 
     User? currentUser = await authService.getCurrentUser();
-    if (currentUser == null) return false;
+    if (currentUser == null) return {'nickname': '', 'isCurrentUser': false};
 
-    return creator == currentUser.email;
+    bool isCurrentUser = creator == currentUser.email;
+    String nickname = isCurrentUser ? await authService.getNickName() : await authService.getPartnerNickName();
+
+    return {'nickname': nickname, 'isCurrentUser': isCurrentUser};
   }
 
   String formatTimestampToTime(DateTime dateTime) {
@@ -34,11 +36,11 @@ class ScheduleCardCell extends StatelessWidget {
   Widget build(BuildContext context) {
     final AuthService authService = AuthService();
 
-    return FutureBuilder<bool>(
+    return FutureBuilder<Map<String, dynamic>>(
         future: _isCreatorCurrentUser(authService, data?.creator),
         builder: (context, snapshot) {
-          final bool isCreatorCurrentUser = snapshot.data ?? false;
-          final String creatorText = isCreatorCurrentUser ? "나" : "상대";
+          final String creatorText = snapshot.data?['nickname'] ?? '';
+          final bool isCreatorCurrentUser = snapshot.data?['isCurrentUser'] ?? false;
           final Color textColor = isCreatorCurrentUser ? const Color(0xFFFBF4DB) : const Color(0xFFF0ECE3);
           final String formattedTime = data?.date != null
               ? formatTimestampToTime(data!.date)
