@@ -1,0 +1,4 @@
+enum PopupStatus {
+  connection,
+  myInfo,
+}
