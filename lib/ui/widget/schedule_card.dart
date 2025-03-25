@@ -93,7 +93,7 @@ class ScheduleCard extends StatelessWidget {
                       if (context.mounted) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ScheduleMoreScreen(dateType: dateType, dateTime: _defaultDate)),
+                          MaterialPageRoute(builder: (context) => ScheduleMoreScreen(scheduleList: list, dateType: dateType, dateTime: _defaultDate)),
                         );
                       }
                     },

@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../../utils/colors.dart';
+import '../data/schedule_card_data.dart';
 import '../service/auth_service.dart';
 import '../widget/header.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
@@ -12,12 +13,12 @@ import '../widget/switch_widget.dart';
 
 class ScheduleSetScreen extends StatefulWidget {
   final DateTime? dateTime; // 설정된  날짜/시간 (수정시 필요)
-  final String? content; // 설정된  날짜/시간 (수정시 필요)
+  final ScheduleData? data; // 없으면 일정 추가 화면
 
   const ScheduleSetScreen({
     super.key,
     this.dateTime,
-    this.content,
+    this.data,
   });
 
   @override
@@ -27,9 +28,9 @@ class ScheduleSetScreen extends StatefulWidget {
 class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
   final AuthService _authService = AuthService();
 
-  final TextEditingController _nicknameController = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  String contentText = "";
+  String? hintText = "";
   DateTime? selectedDate;
   bool isRequestPartner = false;
   bool isReceivePush = false;
@@ -49,19 +50,22 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
     return DateFormat('yyyy년 MM월 dd일 HH시 mm분').format(displayDate);
   }
 
-  void _onTextChanged(String value) {
-    setState(() {
-      contentText = value;
-    });
-  }
-
   void setSchedule() {
-    _authService.addSchedule(contentText, selectedDate ?? widget.dateTime ?? DateTime.now(), isRequestPartner, isReceivePush);
+    widget.data == null
+        ? _authService.addSchedule(_controller.text, selectedDate ?? widget.dateTime ?? DateTime.now(), isRequestPartner, isReceivePush)
+        : _authService.updateSchedule(widget.data?.id ?? "", _controller.text, selectedDate ?? widget.dateTime ?? DateTime.now(), isRequestPartner, isReceivePush);
   }
 
   @override
   void initState() {
     super.initState();
+    if (widget.data != null && widget.data!.content.isNotEmpty) {
+      _controller.text = widget.data!.content;
+      hintText = null;
+    } else {
+      _controller.text = '';
+      hintText = "일정 입력";
+    }
   }
 
   @override
@@ -71,6 +75,9 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
 
   @override
   void dispose() {
+    // Controller와 FocusNode 해제
+    _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -136,12 +143,11 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                     ),
                     const SizedBox(height: 16),
                     TextField(
-                      controller: _nicknameController,
+                      controller: _controller,
                       focusNode: _focusNode,
-                      onChanged: _onTextChanged,
                       maxLength: 40,
                       decoration: InputDecoration(
-                        hintText: widget.content ?? '일정 입력',
+                        hintText: hintText,
                         filled: true,
                         fillColor: darkGrayColor,
                         border: OutlineInputBorder(
@@ -239,9 +245,9 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          child: const Text(
-                            '일정 추가 완료',
-                            style: TextStyle(
+                          child: Text(
+                            widget.data == null ? '일정 추가 완료' : '일정 수정 완료',
+                            style: const TextStyle(
                               color: whiteColor,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

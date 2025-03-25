@@ -52,7 +52,7 @@ class ScheduleCardCell extends StatelessWidget {
               if (context.mounted) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ScheduleSetScreen(dateTime: data?.date, content: data?.content)),
+                  MaterialPageRoute(builder: (context) => ScheduleSetScreen(data : data, dateTime: data?.date)),
                 );
               }
             },

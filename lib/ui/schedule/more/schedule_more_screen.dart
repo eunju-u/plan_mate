@@ -5,6 +5,7 @@ import '../../../enums/schedule_status.dart';
 import '../../../main_view.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/log.dart';
+import '../../data/schedule_card_data.dart';
 import '../../widget/header.dart';
 import '../../widget/schedule_card_cell.dart';
 import '../schedule_set_screen.dart';
@@ -13,8 +14,14 @@ import '../schedule_viewmodel.dart';
 class ScheduleMoreScreen extends StatefulWidget {
   final ScheduleStatus dateType;
   final DateTime? dateTime;
+  final List<ScheduleData> scheduleList;
 
-  const ScheduleMoreScreen({super.key, required this.dateType, this.dateTime});
+  const ScheduleMoreScreen({
+    super.key,
+    required this.dateType,
+    this.dateTime,
+    required this.scheduleList,
+  });
 
   @override
   State<ScheduleMoreScreen> createState() => _ScheduleMoreScreenState();

@@ -333,6 +333,36 @@ class AuthService {
     }
   }
 
+  /// 일정 수정
+  Future<void> updateSchedule(String scheduleId, String updatedContent, DateTime updatedDate, bool isRequestPartner, bool isReceivePush) async {
+    try {
+      log("AuthService", "updateSchedule", "스케쥴 수정 시작 scheduleId : $scheduleId");
+
+      User? user = await getCurrentUser();
+      if (user == null) return;
+
+      String partnerEmail = await getPartner();
+      if (partnerEmail.isEmpty) {
+        return;
+      }
+
+      // Firestore 참조 가져오기
+      DocumentReference scheduleRef = _firestore.collection('schedules').doc(scheduleId);
+
+      // 스케줄 업데이트
+      await scheduleRef.update({
+        'content': updatedContent,
+        'date': Timestamp.fromDate(updatedDate),
+        'isRequestPartner': isRequestPartner,
+        'isReceivePush': isReceivePush,
+      });
+
+      log("AuthService", "updateSchedule", "스케줄이 성공적으로 수정되었습니다.");
+    } catch (e) {
+      log("AuthService", "updateSchedule", "스케줄 수정 중 오류 발생: $e");
+    }
+  }
+
   // 일정 리스트 get
   Future<List<ScheduleData>> getSchedulesByDate(DateTime targetDate) async {
     try {
