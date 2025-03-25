@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:plan_mate/utils/log.dart';
 
 import '../data/schedule_card_data.dart';
 
@@ -16,7 +17,7 @@ class AuthService {
   }
 
   Future<bool> isLogin() async {
-    return await getUserDocument() !=null;
+    return await getUserDocument() != null;
   }
 
   // 구글 로그인
@@ -47,11 +48,11 @@ class AuthService {
       await _firestore.collection('users').doc(email).set({
         'copyCode': code,
         'partner': null,
-        'createdAt': FieldValue.serverTimestamp(), // 서버 시간으로 설정
+        'createdDate': FieldValue.serverTimestamp(), // 서버 시간으로 설정
         'nickName': "",
         'birthDay': null,
-        'withDays': 0,
-        'withText': "오래 사랑하자",
+        'startCoupleDate': null,
+        'withText': "행복하자",
         'schedules': []
       });
 
@@ -80,8 +81,7 @@ class AuthService {
         isUnique = true; // 중복이 없으면 종료
       }
     }
-
-    print("eunjulee generateUniqueCopyCode code : $code");
+    log("AuthService", "generateCopyCode", "code : $code");
     return code;
   }
 
@@ -94,6 +94,17 @@ class AuthService {
     await _firestore.collection('users').doc(user.email).update({
       'nickName': nickName,
       'birthDay': birthDay,
+    });
+  }
+
+  // 내 정보 입력
+  Future<void> setCoupleInfo(DateTime startCoupleDate) async {
+    User? user = await getCurrentUser();
+    if (user == null) return;
+
+    // Firestore에 사용자 정보 저장
+    await _firestore.collection('users').doc(user.email).update({
+      'startCoupleDate': startCoupleDate,
     });
   }
 
@@ -171,12 +182,39 @@ class AuthService {
     }
   }
 
+  // 커플된 날짜
+  Future<Timestamp?> getStartCoupleDate() async {
+    final docSnapshot = await getUserDocument();
+    if (docSnapshot == null) return null;
+
+    final data = docSnapshot.data() as Map<String, dynamic>?;
+    if (data == null) return null;
+
+    final startCoupleDate = data['startCoupleDate'];
+    if (startCoupleDate == null) return null;
+
+    return data['startCoupleDate'];
+  }
+
+  // 문구
+  Future<String?> getWithText() async {
+    final docSnapshot = await getUserDocument();
+    if (docSnapshot == null) return "";
+
+    final data = docSnapshot.data() as Map<String, dynamic>?;
+    return data?['withText'] ?? "";
+  }
+
   Future<bool> hasPartner() async {
     return await getPartner() != "";
   }
 
   Future<bool> hasNickName() async {
     return await getNickName() != "";
+  }
+
+  Future<bool> hasStartCoupleDate() async {
+    return await getStartCoupleDate() != null;
   }
 
   void _signOut() async {
@@ -194,7 +232,7 @@ class AuthService {
       QuerySnapshot querySnapshot = await _firestore.collection('users').where('copyCode', isEqualTo: inputCopyCode).limit(1).get();
 
       if (querySnapshot.docs.isEmpty) {
-        print("eunjulee 해당 copyCode를 가진 사용자가 없습니다.");
+        log("AuthService", "connectPartner", "해당 copyCode를 가진 사용자가 없습니다.");
         return false;
       }
 
@@ -204,7 +242,7 @@ class AuthService {
 
       // 자기 자신과 연결하려는 경우 방지
       if (currentUserId == partner) {
-        print("eunjulee 자기 자신과는 연결할 수 없습니다.");
+        log("AuthService", "connectPartner", "자기 자신과는 연결할 수 없습니다.");
         return false;
       }
 
@@ -217,10 +255,10 @@ class AuthService {
         'partner': currentUserId,
       });
 
-      print("eunjulee 성공적으로 연결되었습니다! 상대방 ID: $partner");
+      log("AuthService", "connectPartner", "성공적으로 연결되었습니다! 상대방 ID: $partner");
       return true;
     } catch (e) {
-      print("eunjulee 파트너 연결 중 오류 발생: $e");
+      log("AuthService", "connectPartner", "파트너 연결 중 오류 발생: $e");
       return false;
     }
   }
@@ -240,10 +278,16 @@ class AuthService {
   // schedules 컬렉션에서 데이터를 가져오기
   Future<List<ScheduleData>> getSchedules() async {
     try {
+      final docSnapshot = await getUserDocument();
+      if (docSnapshot == null) return List.empty();
+
+      final data = docSnapshot.data() as Map<String, dynamic>?;
+      final schedules = data?['schedules'];
+
       final querySnapshot = await _firestore.collection('schedules').get();
 
       // 문서들을 ScheduleData 객체로 변환하여 리스트로 반환
-      return querySnapshot.docs.map((doc) => ScheduleData.fromFirestore(doc)).toList();
+      return schedules.docs.map((doc) => ScheduleData.fromFirestore(doc)).toList();
     } catch (e) {
       print('Error fetching schedules: $e');
       return []; // 에러 발생 시 빈 리스트 반환
@@ -259,7 +303,7 @@ class AuthService {
       String userEmail = user.email!;
       String partnerEmail = await getPartner();
       if (partnerEmail.isEmpty) {
-        print("eunjulee 파트너가 없습니다.");
+        log("AuthService", "connectPartner", "파트너가 없습니다.");
         return;
       }
 
@@ -291,10 +335,18 @@ class AuthService {
 
   Future<List<ScheduleData>> getSchedulesByDate(DateTime targetDate) async {
     try {
-      // 현재 사용자 가져오기
-      User? user = await getCurrentUser();
-      if (user == null) return []; // 사용자 없으면 빈 리스트 반환
+      final docSnapshot = await getUserDocument();
+      if (docSnapshot == null) return [];
 
+      final data = docSnapshot.data() as Map<String, dynamic>?;
+      final scheduleIds = List<String>.from(data?['schedules'] ?? []);
+
+      //collection user에 schedule는 없는데 collection schedule에 값이 있어 일정 데이터가 나와서 예외처리
+      if (scheduleIds.isEmpty) return [];
+
+      // 사용자 이메일 가져오기
+      User? user = await getCurrentUser();
+      if (user == null) return [];
       String userEmail = user.email!;
 
       // 날짜 범위 계산 (하루의 시작과 끝)
@@ -307,7 +359,7 @@ class AuthService {
           .where('date', isGreaterThanOrEqualTo: startOfDay) // 날짜가 시작일 이후
           .where('date', isLessThan: endOfDay) // 날짜가 끝일 이전
           .get();
-      print("eunjulee getSchedulesByDate querySnapshot: ${querySnapshot.docs}");
+      log("AuthService", "getSchedulesByDate", "querySnapshot: ${querySnapshot.docs}");
 
       // 쿼리 결과를 ScheduleData 객체 리스트로 변환하여 반환
       return querySnapshot.docs

@@ -1,11 +1,13 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plan_mate/enums/popup_status.dart';
 import 'package:plan_mate/ui/schedule/schedule_screen.dart';
 
-import '../data/schedule_card_data.dart';
+import '../../main_view.dart';
+import '../../utils/log.dart';
 import '../popup/popup.dart';
 import '../service/auth_service.dart';
 
@@ -16,15 +18,61 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBindingObserver {
   final AuthService _authService = AuthService();
 
   bool isLogin = false;
   String forDays = '우리는 0일째';
+  String withText = '행복하자';
 
   @override
   void initState() {
     super.initState();
+    _fetchUserData();
+    log("home", "initState", "호출");
+
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    log("home", "didChangeAppLifecycleState", "호출");
+    if (state == AppLifecycleState.resumed) {
+    }
+  }
+
+  @override
+  void didPopNext() {
+    log("home", "didPopNext", "호출");
+    // 다른 화면에서 돌아왔을 때 호출
+    _fetchUserData();
+  }
+
+  /// Fetches user data from Firestore and updates the UI.
+  Future<void> _fetchUserData() async {
+    try {
+      final startCoupleDateData = await _authService.getStartCoupleDate();
+      final withTextData = await _authService.getWithText();
+      int startDate = calculateDateDifference(startCoupleDateData ?? Timestamp.now());
+      setState(() {
+        forDays = '우리는 $startDate일째';
+        withText = withTextData ?? '행복하자';
+      });
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
   }
 
   void _showBottomSheet(PopupStatus status) {
@@ -39,6 +87,19 @@ class _HomeScreenState extends State<HomeScreen> {
         return PopupWidget(status: status);
       },
     );
+  }
+
+  int calculateDateDifference(Timestamp timestamp) {
+    // 현재 시간을 DateTime으로 가져오기
+    DateTime now = DateTime.now();
+
+    // Timestamp를 DateTime으로 변환
+    DateTime targetDate = timestamp.toDate();
+
+    // 두 날짜 간의 차이 계산 (일 단위)
+    int differenceInDays = now.difference(targetDate).inDays;
+
+    return differenceInDays;
   }
 
 //0x47f8eed1
@@ -76,9 +137,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ],
                         ),
-                        child: const Text(
-                          '우리는 커플이지롱',
-                          style: TextStyle(
+                        child: Text(
+                          withText,
+                          style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFF387478),
@@ -93,6 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           _authService.isLogin(),
                           _authService.hasNickName(),
                           _authService.hasPartner(),
+                          _authService.hasStartCoupleDate(),
                         ]),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -102,6 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             final isLoggedIn = snapshot.data![0];
                             final hasNickName = snapshot.data![1];
                             final hasPartner = snapshot.data![2];
+                            final hasStartCoupleDate = snapshot.data![3];
 
                             if (isLoggedIn && !hasNickName) {
                               return GestureDetector(
@@ -110,15 +173,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                   _showBottomSheet(PopupStatus.myInfo);
                                 },
                                 child: const Row(
-                                  children: [ Text(
-                                    '내 정보 입력이 필요해요.',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF387478),
+                                  children: [
+                                    Text(
+                                      '내 정보 입력이 필요해요.',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF387478),
+                                      ),
+                                      textAlign: TextAlign.center,
                                     ),
-                                    textAlign: TextAlign.center,
-                                  ),  const Icon(Icons.arrow_right_alt_rounded, color: Color(0xFF387478))],
+                                    Icon(Icons.arrow_right_alt_rounded, color: Color(0xFF387478))
+                                  ],
                                 ),
                               );
                             }
@@ -141,6 +207,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               );
                             }
+                            if (isLoggedIn && !hasStartCoupleDate) {
+                              return GestureDetector(
+                                onTap: () {
+                                  // Navigate to the desired screen when the user does not have a partner
+                                  _showBottomSheet(PopupStatus.coupleInfo);
+                                },
+                                child: const Row(
+                                  children: [
+                                    Text(
+                                      '커플 정보 입력이 필요해요.',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF387478),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Icon(Icons.arrow_right_alt_rounded, color: Color(0xFF387478))
+                                  ],
+                                ),
+                              );
+                            }
 
                             // If none of the conditions match, return an empty space
                             return const SizedBox.shrink();
@@ -150,34 +238,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           return const Center(child: Text('Error loading data.'));
                         },
                       ),
-
-                      // onTap: () async {
-                      //   bool isLogin = await _authService.isLogin();
-                      //   bool hasNickName = await _authService.hasNickName();
-                      //   bool hasPartner = await _authService.hasPartner();
-                      //   if (isLogin) {
-                      //     if (!hasNickName) {
-                      //       _showBottomSheet(PopupStatus.myInfo);
-                      //     } else if (!hasPartner) {
-                      //       _showBottomSheet(PopupStatus.connection);
-                      //     }
-                      //   }
-                      // },
                       const SizedBox(height: 40),
-                      FutureBuilder<List<ScheduleData>>(
-                        future: _authService.getSchedules(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const CircularProgressIndicator(); // 로딩 상태 표시
-                          }
-                          if (snapshot.hasError || !snapshot.hasData) {
-                            return const Text('스케줄 데이터를 불러올 수 없습니다.');
-                          } else {
-                            print("eunjulee ${snapshot.data!}");
-                          }
-                          return SizedBox(height: 450, child: ScheduleScreen(scheduleData: snapshot.data!)); // 데이터 전달
-                        },
-                      ),
+                      const SizedBox(height: 450, child: ScheduleScreen()) // 데이터 전달
                     ],
                   ),
                 ),

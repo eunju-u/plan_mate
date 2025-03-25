@@ -47,8 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         MaterialPageRoute(builder: (context) => const BottomNavBar()),
                       );
                     }
-                  } else {
-                    print("eunjulee Google Sign-In canceled or failed.");
                   }
                 },
               ),

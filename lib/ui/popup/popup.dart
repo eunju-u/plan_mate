@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plan_mate/enums/popup_status.dart';
 import 'package:plan_mate/ui/info/connect_screen.dart';
+import 'package:plan_mate/ui/info/couple_info_screen.dart';
 import 'package:plan_mate/ui/info/info_screen.dart';
 
 class PopupWidget extends StatefulWidget {
@@ -18,6 +19,21 @@ class _PopupWidgetState extends State<PopupWidget> {
   Widget build(BuildContext context) {
     bool isConnection = widget.status == PopupStatus.connection;
     bool isMyInfo = widget.status == PopupStatus.myInfo;
+    bool isCoupleInfo = widget.status == PopupStatus.coupleInfo;
+
+    // 상태에 따라 노출할 문구 설정
+    String text;
+    String buttonText;
+    if (isConnection) {
+      text = '커플 연결을 해주세요.';
+      buttonText = '연결하러 가기';
+    } else if (isCoupleInfo) {
+      text = '커플 정보를 입력해주세요.';
+      buttonText = '커플 정보 입력하러 가기';
+    } else {
+      text = '내 정보를 입력해주세요.';
+      buttonText = '내 정보 입력하러 가기';
+    }
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -26,7 +42,7 @@ class _PopupWidgetState extends State<PopupWidget> {
         children: [
           const SizedBox(height: 15),
           Text(
-            isMyInfo ? '정보를 입력해주세요.' : '커플 연결을 해주세요.',
+            text,
             style: const TextStyle(fontSize: 15, color: Color(0xFF646760)),
           ),
           const SizedBox(height: 25),
@@ -44,7 +60,12 @@ class _PopupWidgetState extends State<PopupWidget> {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => isMyInfo ? const InfoScreen() : const ConnectScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => isMyInfo
+                                  ? const InfoScreen()
+                                  : isConnection
+                                      ? const ConnectScreen()
+                                      : const CoupleInfoScreen()),
                         );
                       }
                     },
@@ -61,7 +82,7 @@ class _PopupWidgetState extends State<PopupWidget> {
                           MediaQuery.withClampedTextScaling(
                             maxScaleFactor: 1.3,
                             child: Text(
-                              isMyInfo ? '정보 입력하러 가기' : '연결하러 가기',
+                              buttonText,
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontFamily: "400m",
@@ -78,14 +99,6 @@ class _PopupWidgetState extends State<PopupWidget> {
               ],
             ),
           ),
-
-          // ElevatedButton(
-          //   onPressed: () {
-          //     Navigator.pop(context);
-          //     // 로그인 화면으로 이동 또는 로그인 로직 추가
-          //   },
-          //   child: const Text('로그인하기'),
-          // ),
         ],
       ),
     );

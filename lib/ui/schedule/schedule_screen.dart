@@ -3,20 +3,20 @@ import 'package:provider/provider.dart';
 import 'package:tab_container/tab_container.dart';
 
 import '../../enums/schedule_status.dart';
-import '../data/schedule_card_data.dart';
+import '../../main_view.dart';
 import 'schedule_viewmodel.dart';
 import '../widget/schedule_card.dart';
+import '../../utils/log.dart';
 
 class ScheduleScreen extends StatefulWidget {
-  final List<ScheduleData> scheduleData; // 전달된 데이터를 받을 변수
 
-  const ScheduleScreen({super.key, required this.scheduleData});
+  const ScheduleScreen({super.key});
 
   @override
   State<ScheduleScreen> createState() => _ScheduleScreenState();
 }
 
-class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProviderStateMixin {
+class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProviderStateMixin, RouteAware, WidgetsBindingObserver {
   late final TabController _controller;
   late TextTheme textTheme;
 
@@ -35,13 +35,35 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
   @override
   void didChangeDependencies() {
     textTheme = Theme.of(context).textTheme;
+    routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute);
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    routeObserver.unsubscribe(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    log("home-schedule", "didChangeAppLifecycleState", "호출");
+    if (state == AppLifecycleState.resumed) {
+      // 다른 화면에서 돌아왔을 때 호출
+      final viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
+      viewModel.fetchSchedules();
+    }
+  }
+
+  //aos 안탐
+  @override
+  void didPopNext() {
+    log("home-schedule", "didPopNext", "호출");
+    // 다른 화면에서 돌아왔을 때 호출
+    final viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
+    viewModel.fetchSchedules();
   }
 
   // 날짜 비교

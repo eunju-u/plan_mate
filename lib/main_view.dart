@@ -4,6 +4,7 @@ import 'package:plan_mate/ui/calendar/calendar_screen.dart';
 import 'package:plan_mate/ui/home/home_screen.dart';
 import 'package:plan_mate/ui/splash/splash_view.dart';
 
+final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 class MainView extends StatelessWidget {
   const MainView({super.key});
 
