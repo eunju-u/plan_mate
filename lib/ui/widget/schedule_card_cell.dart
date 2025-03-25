@@ -9,11 +9,13 @@ import '../service/auth_service.dart';
 class ScheduleCardCell extends StatelessWidget {
   final Color? color;
   final ScheduleData? data;
+  final bool? isFromHome;
 
   const ScheduleCardCell({
     super.key,
     this.color,
     this.data,
+    this.isFromHome,
   });
 
   Future<Map<String, dynamic>> _isCreatorCurrentUser(AuthService authService, String? creator) async {

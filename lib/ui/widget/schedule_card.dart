@@ -3,6 +3,7 @@ import 'package:plan_mate/ui/widget/schedule_card_cell.dart';
 
 import '../../enums/schedule_status.dart';
 import '../data/schedule_card_data.dart';
+import '../schedule/more/schedule_more_screen.dart';
 import '../schedule/schedule_set_screen.dart';
 
 class ScheduleCard extends StatelessWidget {
@@ -29,7 +30,7 @@ class ScheduleCard extends StatelessWidget {
         children: [
           if (list.isNotEmpty)
             for (int i = 0; i < (list.length > 3 ? 3 : list.length); i++) ...[
-              Expanded(flex: 2, child: ScheduleCardCell(data: list[i])),
+              Expanded(flex: 2, child: ScheduleCardCell(data: list[i], isFromHome: true)),
               const SizedBox(height: 8),
             ],
           if (list.isNotEmpty)
@@ -52,7 +53,7 @@ class ScheduleCard extends StatelessWidget {
               children: [
                 ElevatedButton.icon(
                   onPressed: () {
-                    // 일정 등록 동작
+                    // 일정 등록 화면
                     if (context.mounted) {
                       Navigator.push(
                         context,
@@ -77,7 +78,13 @@ class ScheduleCard extends StatelessWidget {
                 if (list.isNotEmpty)
                   ElevatedButton.icon(
                     onPressed: () {
-                      // 일정 등록 동작
+                      // 일정 더보기 화면
+                      if (context.mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ScheduleMoreScreen(dateType: dateType)),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFF0ECE3),
