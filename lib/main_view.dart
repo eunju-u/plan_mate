@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:plan_mate/ui/calendar/calendar_screen.dart';
 import 'package:plan_mate/ui/home/home_screen.dart';
 import 'package:plan_mate/ui/splash/splash_view.dart';
@@ -11,6 +12,7 @@ class MainView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MaterialApp(
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: greenColor),
