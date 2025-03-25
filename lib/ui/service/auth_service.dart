@@ -333,6 +333,7 @@ class AuthService {
     }
   }
 
+  // 일정 리스트 get
   Future<List<ScheduleData>> getSchedulesByDate(DateTime targetDate) async {
     try {
       final docSnapshot = await getUserDocument();
@@ -358,6 +359,7 @@ class AuthService {
           .where('participants', arrayContains: userEmail) // 참가자에 사용자 이메일 포함
           .where('date', isGreaterThanOrEqualTo: startOfDay) // 날짜가 시작일 이후
           .where('date', isLessThan: endOfDay) // 날짜가 끝일 이전
+          .orderBy('date', descending: false) // 날짜를 기준으로 오름차순 정렬
           .get();
       log("AuthService", "getSchedulesByDate", "querySnapshot: ${querySnapshot.docs}");
 
