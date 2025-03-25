@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../enums/schedule_status.dart';
+import '../../../main_view.dart';
 import '../../../utils/colors.dart';
+import '../../../utils/log.dart';
 import '../../widget/header.dart';
 import '../../widget/schedule_card_cell.dart';
 import '../schedule_set_screen.dart';
@@ -18,11 +20,44 @@ class ScheduleMoreScreen extends StatefulWidget {
   State<ScheduleMoreScreen> createState() => _ScheduleMoreScreenState();
 }
 
-class _ScheduleMoreScreenState extends State<ScheduleMoreScreen> {
+class _ScheduleMoreScreenState extends State<ScheduleMoreScreen> with RouteAware, WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    // ViewModel 초기 데이터 로드
+    log("schedule_more", "initState", "호출");
+    loadSchedules();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+      log("schedule_more", "didChangeAppLifecycleState", "호출");
+      loadSchedules();
+    }
+  }
+
+  @override
+  void didPopNext() {
+    log("schedule_more", "didPopNext", "호출");
+    // 다른 화면에서 돌아왔을 때 호출
+    loadSchedules();
+  }
+
+  void loadSchedules() {
     Future.microtask(() {
       final viewModel = Provider.of<ScheduleViewModel>(context, listen: false);
       viewModel.fetchSchedules();

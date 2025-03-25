@@ -29,13 +29,14 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
     log("home", "initState", "호출");
-
+    WidgetsBinding.instance.addObserver(this);
+    _fetchUserData();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     routeObserver.unsubscribe(this);
     super.dispose();
   }
@@ -49,8 +50,9 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    log("home", "didChangeAppLifecycleState", "호출");
     if (state == AppLifecycleState.resumed) {
+      log("home", "didChangeAppLifecycleState", "호출");
+      _fetchUserData();
     }
   }
 
@@ -64,6 +66,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
   /// Fetches user data from Firestore and updates the UI.
   Future<void> _fetchUserData() async {
     try {
+      log("home", "_fetchUserData", "호출");
       final startCoupleDateData = await _authService.getStartCoupleDate();
       final withTextData = await _authService.getWithText();
       int startDate = calculateDateDifference(startCoupleDateData ?? Timestamp.now());
@@ -72,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
         withText = withTextData ?? '행복하자';
       });
     } catch (e) {
-      print('Error fetching user data: $e');
+      log("home", "_fetchUserData", "호출 중 에러 : $e");
     }
   }
 
@@ -158,9 +161,6 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
                           _authService.hasStartCoupleDate(),
                         ]),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const CircularProgressIndicator(); // Loading state
-                          }
                           if (snapshot.hasData) {
                             final isLoggedIn = snapshot.data![0];
                             final hasNickName = snapshot.data![1];
@@ -190,7 +190,6 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
                               );
                             }
 
-                            // Handle the condition where the user is logged in but does not have a partner
                             if (isLoggedIn && !hasPartner) {
                               return GestureDetector(
                                 onTap: () {
@@ -230,13 +229,9 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
                                 ),
                               );
                             }
-
-                            // If none of the conditions match, return an empty space
                             return const SizedBox.shrink();
                           }
-
-                          // Handle error state or if data is null
-                          return const Center(child: Text('Error loading data.'));
+                          return const SizedBox.shrink();
                         },
                       ),
                       const SizedBox(height: 40),
