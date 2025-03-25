@@ -19,6 +19,16 @@ class ScheduleCard extends StatelessWidget {
     required this.list,
   });
 
+  DateTime get _defaultDate {
+    final DateTime today = DateTime.now();
+    if (dateType == ScheduleStatus.yesterday) {
+      return today.subtract(const Duration(days: 1));
+    } else if (dateType == ScheduleStatus.tomorrow) {
+      return today.add(const Duration(days: 1));
+    }
+    return today; // 기본값은 오늘 날짜
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,7 +41,7 @@ class ScheduleCard extends StatelessWidget {
         children: [
           if (list.isNotEmpty)
             for (int i = 0; i < (list.length > 3 ? 3 : list.length); i++) ...[
-              Expanded(flex: 2, child: ScheduleCardCell(data: list[i], isFromHome: true)),
+              Expanded(flex: 2, child: ScheduleCardCell(data: list[i])),
               const SizedBox(height: 8),
             ],
           if (list.isNotEmpty)
@@ -58,7 +68,7 @@ class ScheduleCard extends StatelessWidget {
                     if (context.mounted) {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ScheduleSetScreen(dateType: dateType)),
+                        MaterialPageRoute(builder: (context) => ScheduleSetScreen(dateTime: _defaultDate)),
                       );
                     }
                   },
@@ -83,7 +93,7 @@ class ScheduleCard extends StatelessWidget {
                       if (context.mounted) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ScheduleMoreScreen(dateType: dateType)),
+                          MaterialPageRoute(builder: (context) => ScheduleMoreScreen(dateType: dateType, dateTime: _defaultDate)),
                         );
                       }
                     },

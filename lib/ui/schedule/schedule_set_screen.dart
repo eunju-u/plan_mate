@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
-import '../../enums/schedule_status.dart';
 import '../../utils/colors.dart';
 import '../service/auth_service.dart';
 import '../widget/header.dart';
@@ -12,11 +11,13 @@ import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import '../widget/switch_widget.dart';
 
 class ScheduleSetScreen extends StatefulWidget {
-  final ScheduleStatus dateType;
+  final DateTime? dateTime; // 설정된  날짜/시간 (수정시 필요)
+  final String? content; // 설정된  날짜/시간 (수정시 필요)
 
   const ScheduleSetScreen({
     super.key,
-    required this.dateType,
+    this.dateTime,
+    this.content,
   });
 
   @override
@@ -28,34 +29,34 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
 
   final TextEditingController _nicknameController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  String content = "";
+  String contentText = "";
   DateTime? selectedDate;
   bool isRequestPartner = false;
   bool isReceivePush = false;
 
-  DateTime get _defaultDate {
-    final DateTime today = DateTime.now();
-    if (widget.dateType == ScheduleStatus.yesterday) {
-      return today.subtract(const Duration(days: 1));
-    } else if (widget.dateType == ScheduleStatus.tomorrow) {
-      return today.add(const Duration(days: 1));
-    }
-    return today; // 기본값은 오늘 날짜
-  }
+  // DateTime get _defaultDate {
+  //   final DateTime today = DateTime.now();
+  //   if (widget.dateType == ScheduleStatus.yesterday) {
+  //     return today.subtract(const Duration(days: 1));
+  //   } else if (widget.dateType == ScheduleStatus.tomorrow) {
+  //     return today.add(const Duration(days: 1));
+  //   }
+  //   return today; // 기본값은 오늘 날짜
+  // }
 
   String _formattedDate() {
-    final DateTime displayDate = selectedDate ?? _defaultDate;
+    final DateTime displayDate = selectedDate ?? widget.dateTime ?? DateTime.now();
     return DateFormat('yyyy년 MM월 dd일 HH시 mm분').format(displayDate);
   }
 
   void _onTextChanged(String value) {
     setState(() {
-      content = value;
+      contentText = value;
     });
   }
 
   void setSchedule() {
-    _authService.addSchedule(content, selectedDate ?? _defaultDate, isRequestPartner, isReceivePush);
+    _authService.addSchedule(contentText, selectedDate ?? widget.dateTime ?? DateTime.now(), isRequestPartner, isReceivePush);
   }
 
   @override
@@ -103,7 +104,7 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                     const SizedBox(height: 16),
                     GestureDetector(
                       onTap: () async {
-                        final DateTime? dateTime = await showOmniDateTimePicker(context: context, initialDate  : _defaultDate);
+                        final DateTime? dateTime = await showOmniDateTimePicker(context: context, initialDate: widget.dateTime ?? DateTime.now());
                         setState(() {
                           selectedDate = dateTime;
                         });
@@ -140,7 +141,7 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                       onChanged: _onTextChanged,
                       maxLength: 40,
                       decoration: InputDecoration(
-                        hintText: '일정 입력',
+                        hintText: widget.content ?? '일정 입력',
                         filled: true,
                         fillColor: darkGrayColor,
                         border: OutlineInputBorder(

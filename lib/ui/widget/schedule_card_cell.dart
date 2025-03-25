@@ -5,18 +5,17 @@ import 'package:plan_mate/ui/widget/tag.dart';
 
 import '../../utils/colors.dart';
 import '../data/schedule_card_data.dart';
+import '../schedule/schedule_set_screen.dart';
 import '../service/auth_service.dart';
 
 class ScheduleCardCell extends StatelessWidget {
   final Color? color;
   final ScheduleData? data;
-  final bool? isFromHome;
 
   const ScheduleCardCell({
     super.key,
     this.color,
     this.data,
-    this.isFromHome,
   });
 
   Future<Map<String, dynamic>> _isCreatorCurrentUser(AuthService authService, String? creator) async {
@@ -47,46 +46,57 @@ class ScheduleCardCell extends StatelessWidget {
           final Color textColor = isCreatorCurrentUser ? lightLimeColor : lightBeigeColor;
           final String formattedTime = data?.date != null ? formatTimestampToTime(data!.date) : "00:00";
 
-          return Container(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-            decoration: BoxDecoration(
-              color: whiteColor,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            data?.content ?? "",
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: greenColor,
+          return GestureDetector(
+            onTap: (){
+              //TODO eunjulee
+              if (context.mounted) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ScheduleSetScreen(dateTime: data?.date, content: data?.content)),
+                );
+              }
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              data?.content ?? "",
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: greenColor,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            formattedTime,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black87,
+                            const SizedBox(height: 4),
+                            Text(
+                              formattedTime,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.black87,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Container(width: 3),
-                Tag(color: textColor, text: creatorText),
-              ],
+                  Container(width: 3),
+                  Tag(color: textColor, text: creatorText),
+                ],
+              ),
             ),
           );
         });

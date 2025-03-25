@@ -37,7 +37,7 @@ class _PopupWidgetState extends State<PopupWidget> {
     }
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(15),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
