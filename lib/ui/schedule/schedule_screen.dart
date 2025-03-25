@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plan_mate/utils/colors.dart';
 import 'package:provider/provider.dart';
 import 'package:tab_container/tab_container.dart';
 
@@ -9,7 +10,6 @@ import '../widget/schedule_card.dart';
 import '../../utils/log.dart';
 
 class ScheduleScreen extends StatefulWidget {
-
   const ScheduleScreen({super.key});
 
   @override
@@ -98,7 +98,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
                   ),
                 );
               },
-              colors: const <Color>[Color(0xFFF1F3C2), Color(0xFFF1F3C2), Color(0xFFF1F3C2)],
+              colors: const <Color>[limeColor, limeColor, limeColor],
               selectedTextStyle: textTheme.bodyMedium?.copyWith(fontSize: 15.0),
               unselectedTextStyle: textTheme.bodyMedium?.copyWith(fontSize: 13.0),
               tabs: _getTabs(),
@@ -117,7 +117,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> with SingleTickerProvid
 
   Widget _buildScheduleList(ScheduleViewModel viewModel, ScheduleStatus dateType) {
     final schedules = viewModel.schedules[dateType.name] ?? [];
-    return ScheduleCard(dateType : dateType, list: schedules);
+    return ScheduleCard(dateType: dateType, list: schedules);
   }
 
   List<Widget> _getTabs() {

@@ -3,6 +3,7 @@ import 'package:plan_mate/ui/calendar/widget/calendar_widget.dart';
 import 'package:plan_mate/ui/calendar/widget/calendar_style.dart';
 import 'package:plan_mate/utils/calendar_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:plan_mate/utils/colors.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -90,7 +91,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           title: Text('${value[index]}',
                               style: const TextStyle(
                                 fontSize: 14,
-                                color: Color(0xFF387478),
+                                color: greenColor,
                                 height: 1,
                               )),
                         ),

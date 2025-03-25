@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../enums/schedule_status.dart';
+import '../../../utils/colors.dart';
 import '../../widget/header.dart';
 import '../../widget/schedule_card_cell.dart';
 import '../schedule_viewmodel.dart';
@@ -32,7 +33,7 @@ class _ScheduleMoreScreenState extends State<ScheduleMoreScreen> {
     List list = viewModel.schedules[widget.dateType.name] ?? [];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: whiteColor,
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.only(

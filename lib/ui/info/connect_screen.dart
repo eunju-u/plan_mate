@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../utils/colors.dart';
 import '../service/auth_service.dart';
 import '../widget/header.dart';
 
@@ -71,7 +72,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
         _focusNode.unfocus();
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: whiteColor,
         body: SafeArea(
           child: Container(
             padding: const EdgeInsets.only(
@@ -88,7 +89,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
                     const SizedBox(height: 25),
                     Container(
                       decoration: BoxDecoration(
-                        color: const Color(0x47f8eed1),
+                        color: darkGrayColor,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
@@ -96,7 +97,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
                           const SizedBox(height: 15),
                           const Text(
                             '초대 코드',
-                            style: TextStyle(color: Color(0xFF387478), fontSize: 15, fontWeight: FontWeight.bold),
+                            style: TextStyle(color: greenColor, fontSize: 15, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 15),
                           Text(
@@ -138,13 +139,13 @@ class _ConnectScreenState extends State<ConnectScreen> {
                     const Text(
                       '초대 코드를 전달받으셨다면',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Color(0xFF9E9E9E), fontSize: 13),
+                      style: TextStyle(color: lightGrayColor, fontSize: 13),
                     ),
                     const SizedBox(height: 10),
                     Container(
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: whiteColor,
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
@@ -167,11 +168,11 @@ class _ConnectScreenState extends State<ConnectScreen> {
                           hintText: '초대 코드 입력...',
                           filled: true,
                           border: InputBorder.none,
-                          fillColor: const Color(0x47f8eed1),
+                          fillColor: darkGrayColor,
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                           suffixIcon: _controller.text.isNotEmpty
                               ? IconButton(
-                                  icon: const Icon(Icons.close, color: Color(0xFF9E9E9E)),
+                                  icon: const Icon(Icons.close, color: lightGrayColor),
                                   onPressed: () {
                                     _controller.clear(); // 입력 필드 내용 삭제
                                     setState(() {}); // UI 갱신
@@ -190,7 +191,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
                             }
                           : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isConnectValid ? const Color(0xFF387478) : const Color(0xFF9E9E9E),
+                        backgroundColor: isConnectValid ? greenColor : lightGrayColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -199,7 +200,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
                         padding: EdgeInsets.symmetric(vertical: 12.0),
                         child: Text(
                           '커플 연결하기',
-                          style: TextStyle(color: Colors.white, fontSize: 15),
+                          style: TextStyle(color: whiteColor, fontSize: 15),
                         ),
                       ),
                     ),

@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../../enums/schedule_status.dart';
+import '../../utils/colors.dart';
 import '../service/auth_service.dart';
 import '../widget/header.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
@@ -79,7 +80,7 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
         _focusNode.unfocus();
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: whiteColor,
         body: SafeArea(
           child: Container(
             padding: const EdgeInsets.only(left: 15, right: 15, bottom: 24),
@@ -96,7 +97,7 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF387478),
+                        color: greenColor,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -111,13 +112,13 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                         decoration: BoxDecoration(
-                          color: const Color(0x47f8eed1),
+                          color: darkGrayColor,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           _formattedDate(),
                           style: TextStyle(
-                            color: selectedDate == null ? const Color(0xFF9E9E9E) : Colors.black,
+                            color: selectedDate == null ? lightGrayColor : Colors.black,
                             fontSize: 15,
                           ),
                         ),
@@ -129,7 +130,7 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF387478),
+                        color: greenColor,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -141,7 +142,7 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                       decoration: InputDecoration(
                         hintText: '일정 입력',
                         filled: true,
-                        fillColor: const Color(0x47f8eed1),
+                        fillColor: darkGrayColor,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                           borderSide: BorderSide.none,
@@ -155,7 +156,7 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF387478),
+                        color: greenColor,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -168,7 +169,7 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF9E9E9E),
+                              color: lightGrayColor,
                             ),
                           ),
                         ),
@@ -189,7 +190,7 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF387478),
+                        color: greenColor,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -202,7 +203,7 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF9E9E9E),
+                              color: lightGrayColor,
                             ),
                           ),
                         ),
@@ -232,7 +233,7 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF387478),
+                            backgroundColor: greenColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -240,7 +241,7 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                           child: const Text(
                             '일정 추가 완료',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: whiteColor,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),

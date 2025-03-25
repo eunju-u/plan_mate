@@ -7,6 +7,7 @@ import 'package:plan_mate/enums/popup_status.dart';
 import 'package:plan_mate/ui/schedule/schedule_screen.dart';
 
 import '../../main_view.dart';
+import '../../utils/colors.dart';
 import '../../utils/log.dart';
 import '../popup/popup.dart';
 import '../service/auth_service.dart';
@@ -107,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: whiteColor,
       body: SafeArea(
         child: Container(
             padding: const EdgeInsets.only(
@@ -121,13 +122,13 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
                   child: Column(
                     children: <Widget>[
                       const SizedBox(height: 40),
-                      Text(forDays, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF387478)), textAlign: TextAlign.center),
+                      Text(forDays, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: greenColor), textAlign: TextAlign.center),
                       const SizedBox(height: 40),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: const Color(0xffffffff),
+                          color: whiteColor,
                           boxShadow: const [
                             BoxShadow(
                               color: Color.fromRGBO(100, 103, 96, 0.1),
@@ -142,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF387478),
+                            color: greenColor,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -179,11 +180,11 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
                                       style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
-                                        color: Color(0xFF387478),
+                                        color: greenColor,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
-                                    Icon(Icons.arrow_right_alt_rounded, color: Color(0xFF387478))
+                                    Icon(Icons.arrow_right_alt_rounded, color: greenColor)
                                   ],
                                 ),
                               );
@@ -201,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
                                   style: TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF387478),
+                                    color: greenColor,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -220,11 +221,11 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
                                       style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
-                                        color: Color(0xFF387478),
+                                        color: greenColor,
                                       ),
                                       textAlign: TextAlign.center,
                                     ),
-                                    Icon(Icons.arrow_right_alt_rounded, color: Color(0xFF387478))
+                                    Icon(Icons.arrow_right_alt_rounded, color: greenColor)
                                   ],
                                 ),
                               );

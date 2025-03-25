@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_gesture_detector/simple_gesture_detector.dart';
 
+import '../../../utils/colors.dart';
 import '../table_calendar_base.dart';
 import 'calendar_builders.dart';
 import 'calendar_header.dart';
@@ -557,14 +558,14 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
                 width: 18, // 원형의 크기
                 height: 18,
                 decoration: const BoxDecoration(
-                  color: Color(0xFF387478),
+                  color: greenColor,
                   shape: BoxShape.circle,
                 ),
                 child: Center(
                   child: Text(
                     '${events.length}',
                     style: const TextStyle(
-                      color: Color(0xFFFFFFFF),
+                      color: whiteColor,
                       fontSize: 10, // 텍스트 크기
                     ),
                   ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:plan_mate/ui/widget/tag.dart';
 
+import '../../utils/colors.dart';
 import '../data/schedule_card_data.dart';
 import '../service/auth_service.dart';
 
@@ -43,15 +44,13 @@ class ScheduleCardCell extends StatelessWidget {
         builder: (context, snapshot) {
           final String creatorText = snapshot.data?['nickname'] ?? '';
           final bool isCreatorCurrentUser = snapshot.data?['isCurrentUser'] ?? false;
-          final Color textColor = isCreatorCurrentUser ? const Color(0xFFFBF4DB) : const Color(0xFFF0ECE3);
-          final String formattedTime = data?.date != null
-              ? formatTimestampToTime(data!.date)
-              : "00:00";
+          final Color textColor = isCreatorCurrentUser ? lightLimeColor : lightBeigeColor;
+          final String formattedTime = data?.date != null ? formatTimestampToTime(data!.date) : "00:00";
 
           return Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: whiteColor,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -69,7 +68,7 @@ class ScheduleCardCell extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF387478),
+                              color: greenColor,
                             ),
                           ),
                           const SizedBox(height: 4),

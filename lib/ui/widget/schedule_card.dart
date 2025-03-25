@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plan_mate/ui/widget/schedule_card_cell.dart';
+import 'package:plan_mate/utils/colors.dart';
 
 import '../../enums/schedule_status.dart';
 import '../data/schedule_card_data.dart';
@@ -62,16 +63,16 @@ class ScheduleCard extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFBF4DB),
+                    backgroundColor: lightLimeColor,
                     elevation: 0,
                   ),
                   icon: const Icon(
                     Icons.add,
-                    color: Color(0xffff96e2a),
+                    color: orangeColor,
                   ),
                   label: const Text(
                     '일정 추가',
-                    style: TextStyle(color: Color(0xFFF96E2A)),
+                    style: TextStyle(color: orangeColor),
                   ),
                 ),
                 const SizedBox(height: 5),
@@ -87,7 +88,7 @@ class ScheduleCard extends StatelessWidget {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFF0ECE3),
+                      backgroundColor: lightBeigeColor,
                       elevation: 0,
                     ),
                     icon: const Icon(

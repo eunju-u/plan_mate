@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../main_view.dart';
+import '../../utils/colors.dart';
 import '../service/auth_service.dart';
 
 //스플래쉬다음으로 하기
@@ -27,12 +28,12 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: EdgeInsets.all(16.0),
               child: Text(
                 'plan mate',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xFF387478)),
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: greenColor),
               ),
             ),
             Expanded(
               child: LoginButton(
-                color: Colors.white,
+                color: whiteColor,
                 icon: 'assets/icons_google.png',
                 text: '구글로 시작하기',
                 textColor: Colors.black,
@@ -70,7 +71,7 @@ class LoginButton extends StatelessWidget {
     required this.color,
     required this.icon,
     required this.text,
-    this.textColor = Colors.white,
+    this.textColor = whiteColor,
     required this.onPressed,
   });
 

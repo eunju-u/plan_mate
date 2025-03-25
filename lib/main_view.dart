@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:plan_mate/ui/calendar/calendar_screen.dart';
 import 'package:plan_mate/ui/home/home_screen.dart';
 import 'package:plan_mate/ui/splash/splash_view.dart';
+import 'package:plan_mate/utils/colors.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 class MainView extends StatelessWidget {
@@ -12,7 +13,7 @@ class MainView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF387478)),
+        colorScheme: ColorScheme.fromSeed(seedColor: greenColor),
         useMaterial3: true,
       ),
       home: const SplashView(),

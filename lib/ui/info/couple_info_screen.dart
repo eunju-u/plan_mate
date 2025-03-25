@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../utils/colors.dart';
 import '../service/auth_service.dart';
 import '../widget/header.dart';
 
@@ -25,7 +26,7 @@ class _CoupleInfoScreenState extends State<CoupleInfoScreen> {
       context: context,
       builder: (_) => Container(
         height: 250,
-        color: Colors.white,
+        color: whiteColor,
         child: Column(
           children: [
             SizedBox(
@@ -43,11 +44,11 @@ class _CoupleInfoScreenState extends State<CoupleInfoScreen> {
             ),
             // Close Button
             CupertinoButton(
-              color: const Color(0xFF387478),
+              color: greenColor,
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('완료', style: TextStyle(color: Colors.white)),
+              child: const Text('완료', style: TextStyle(color: whiteColor)),
             )
           ],
         ),
@@ -67,7 +68,7 @@ class _CoupleInfoScreenState extends State<CoupleInfoScreen> {
         _focusNode.unfocus();
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: whiteColor,
         body: SafeArea(
           child: Container(
               padding: const EdgeInsets.only(left: 15, right: 15, bottom: 24),
@@ -85,7 +86,7 @@ class _CoupleInfoScreenState extends State<CoupleInfoScreen> {
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF387478),
+                            color: greenColor,
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -95,13 +96,13 @@ class _CoupleInfoScreenState extends State<CoupleInfoScreen> {
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
                             decoration: BoxDecoration(
-                              color: const Color(0x47f8eed1),
+                              color: darkGrayColor,
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               _formattedDate(),
                               style: TextStyle(
-                                color: selectedDate == null ? const Color(0xFF9E9E9E) : Colors.black,
+                                color: selectedDate == null ? lightGrayColor : Colors.black,
                                 fontSize: 15,
                               ),
                             ),
@@ -121,7 +122,7 @@ class _CoupleInfoScreenState extends State<CoupleInfoScreen> {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF387478),
+                                backgroundColor: greenColor,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -129,7 +130,7 @@ class _CoupleInfoScreenState extends State<CoupleInfoScreen> {
                               child: const Text(
                                 '커플 연결하러 가기',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: whiteColor,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),

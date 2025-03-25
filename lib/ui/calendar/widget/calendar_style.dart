@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:plan_mate/utils/colors.dart';
 
 import '../../../utils/calendar_utils.dart';
 
@@ -113,7 +114,7 @@ class CalendarStyle {
       fontSize: 15.0,
     ), //
     this.todayDecoration = const BoxDecoration(
-      color: Color(0xFFFFFFFF),
+      color: whiteColor,
       shape: BoxShape.circle,
     ),
     this.selectedTextStyle = const TextStyle(
@@ -121,7 +122,7 @@ class CalendarStyle {
       fontSize: 15.0,
     ),
     this.selectedDecoration = const BoxDecoration(
-      color: Color(0xFFF1F3C2),
+      color: limeColor,
       shape: BoxShape.circle,
     ),
     this.rangeStartTextStyle = const TextStyle(

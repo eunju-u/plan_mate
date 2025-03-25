@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plan_mate/utils/colors.dart';
 
 class Tag extends StatelessWidget {
   final Color? color;
@@ -16,11 +17,11 @@ class Tag extends StatelessWidget {
       height: 30,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: color ?? Colors.white,
+        color: color ?? whiteColor,
         borderRadius: BorderRadius.circular(30),
         border: Border.all(
           width: 1,
-          color: color ?? Colors.white,
+          color: color ?? whiteColor,
         ),
       ),
       child: Center(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/colors.dart';
+
 class SwitchWidget extends StatefulWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
@@ -43,7 +45,7 @@ class _SwitchWidgetState extends State<SwitchWidget> with SingleTickerProviderSt
             height: 22.0,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(31.0),
-              color: const Color(0xFF387478),
+              color: greenColor,
             ),
             child: Padding(
               padding: const EdgeInsets.only(top: 2.0, bottom: 2.0, right: 2.0, left: 2.0),
@@ -53,11 +55,11 @@ class _SwitchWidgetState extends State<SwitchWidget> with SingleTickerProviderSt
                     width: 16.0,
                     height: 16.0,
                     alignment: Alignment.center,
-                    decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
+                    decoration: const BoxDecoration(shape: BoxShape.circle, color: whiteColor),
                     child: Text(
                       widget.value == true ? 'on' : 'off',
-                      style: TextStyle(
-                        color: widget.value == true ? const Color(0xFF387478) : const Color(0xFF387478),
+                      style: const TextStyle(
+                        color: greenColor,
                         fontFamily: '400m',
                         fontSize: 12,
                       ),
