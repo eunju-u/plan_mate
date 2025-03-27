@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:plan_mate/ui/calendar/calendar_screen.dart';
 import 'package:plan_mate/ui/home/home_screen.dart';
 import 'package:plan_mate/ui/splash/splash_view.dart';
@@ -14,6 +15,16 @@ class MainView extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MaterialApp(
+      locale: const Locale('ko', 'KR'),
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('ko', 'KR'), // 한국어 추가
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate, // Material 위젯 번역
+        GlobalWidgetsLocalizations.delegate, // 기본 위젯 번역
+        GlobalCupertinoLocalizations.delegate, // iOS 스타일 위젯 번역 (Cupertino)
+      ],
       navigatorObservers: [routeObserver],
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: greenColor),
