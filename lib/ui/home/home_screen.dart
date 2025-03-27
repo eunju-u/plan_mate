@@ -67,6 +67,17 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
   /// Fetches user data from Firestore and updates the UI.
   Future<void> _fetchUserData() async {
     try {
+      final hasPartner = await _authService.hasPartner();
+      final hasStartCoupleDate = await _authService.hasStartCoupleDate();
+      if (hasPartner && !hasStartCoupleDate) {
+        final partnerStartCoupleDate = await _authService.getPartnerStartCoupleDate();
+
+        if (partnerStartCoupleDate != null) {
+          DateTime targetDate = partnerStartCoupleDate.toDate();
+          _authService.setCoupleInfo(targetDate);
+        }
+      }
+
       log("home", "_fetchUserData", "호출");
       final startCoupleDateData = await _authService.getStartCoupleDate();
       final withTextData = await _authService.getWithText();

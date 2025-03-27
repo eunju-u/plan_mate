@@ -170,8 +170,6 @@ class AuthService {
       if (partnerDoc.exists) {
         // 문서에서 'nickName' 값을 가져옴
         final data = partnerDoc.data();
-        String dd = data?['nickName'] ?? "";
-        print("ejlee5 getPartnerNickName : $dd");
         return data?['nickName'] ?? ""; // nickName이 없으면 빈 문자열 반환
       } else {
         return ""; // 파트너 문서가 없으면 빈 문자열 반환
@@ -179,6 +177,34 @@ class AuthService {
     } catch (e) {
       print("Error fetching partner's nickname: $e");
       return ""; // 에러 발생 시 빈 문자열 반환
+    }
+  }
+
+  // 상대방의 커플 날짜 가져오는 함수
+  Future<Timestamp?> getPartnerStartCoupleDate() async {
+    try {
+      // 현재 로그인된 사용자의 partner 이메일을 가져옴
+      String partnerEmail = await getPartner();
+
+      if (partnerEmail.isEmpty) {
+        return null; // 파트너가 없는 경우 빈 문자열 반환
+      }
+
+      // Firestore에서 파트너 문서를 가져옴
+      final partnerDoc = await _firestore.collection('users').doc(partnerEmail).get();
+
+      if (partnerDoc.exists) {
+        log("home", "getPartnerStartCoupleDate", "11");
+
+        // 문서에서 'startCoupleDate' 값을 가져옴
+        final data = partnerDoc.data();
+        return data?['startCoupleDate'] ?? ""; // startCoupleData이 없으면 빈 문자열 반환
+      } else {
+        return null; // 파트너 문서가 없으면 빈 문자열 반환
+      }
+    } catch (e) {
+      print("Error fetching partner's startCoupleDate: $e");
+      return null; // 에러 발생 시 빈 문자열 반환
     }
   }
 
