@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:plan_mate/enums/popup_status.dart';
+import 'package:plan_mate/ui/login/login_screen.dart';
+import 'package:plan_mate/ui/popup/bottom_popup.dart';
 import 'package:plan_mate/ui/widget/schedule_card_cell.dart';
 import 'package:plan_mate/utils/colors.dart';
 
@@ -6,13 +9,15 @@ import '../../enums/schedule_status.dart';
 import '../data/schedule_card_data.dart';
 import '../schedule/more/schedule_more_screen.dart';
 import '../schedule/schedule_set_screen.dart';
+import '../service/auth_service.dart';
 
 class ScheduleCard extends StatelessWidget {
   final Color? color;
   final List<ScheduleData> list;
   final ScheduleStatus dateType;
+  final AuthService _authService = AuthService();
 
-  const ScheduleCard({
+  ScheduleCard({
     super.key,
     this.color,
     required this.dateType,
@@ -63,13 +68,29 @@ class ScheduleCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton.icon(
-                  onPressed: () {
-                    // 일정 등록 화면
-                    if (context.mounted) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ScheduleSetScreen(dateTime: _defaultDate)),
-                      );
+                  onPressed: () async {
+                    bool isLogin = await _authService.isLogin();
+                    bool hasNickName = await _authService.hasNickName();
+
+                    if (!isLogin) {
+                      if (context.mounted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                        );
+                      }
+                    } else {
+                      if (hasNickName) {
+                        // 일정 등록 화면
+                        if (context.mounted) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ScheduleSetScreen(dateTime: _defaultDate)),
+                          );
+                        }
+                      } else {
+                        BottomPopup.show(context, PopupStatus.myInfo);
+                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(

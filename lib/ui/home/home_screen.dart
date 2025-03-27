@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plan_mate/enums/popup_status.dart';
+import 'package:plan_mate/ui/popup/bottom_popup.dart';
 import 'package:plan_mate/ui/schedule/schedule_screen.dart';
 
 import '../../main_view.dart';
@@ -77,20 +78,6 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
     } catch (e) {
       log("home", "_fetchUserData", "호출 중 에러 : $e");
     }
-  }
-
-  void _showBottomSheet(PopupStatus status) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(20), // 상단 테두리 둥글게 설정
-        ),
-      ),
-      builder: (BuildContext context) {
-        return PopupWidget(status: status);
-      },
-    );
   }
 
   int calculateDateDifference(Timestamp timestamp) {
@@ -170,8 +157,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
                             if (isLoggedIn && !hasNickName) {
                               return GestureDetector(
                                 onTap: () {
-                                  // Navigate to the desired screen when the user does not have a partner
-                                  _showBottomSheet(PopupStatus.myInfo);
+                                  BottomPopup.show(context, PopupStatus.myInfo);
                                 },
                                 child: const Row(
                                   children: [
@@ -193,8 +179,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
                             if (isLoggedIn && !hasPartner) {
                               return GestureDetector(
                                 onTap: () {
-                                  // Navigate to the desired screen when the user does not have a partner
-                                  _showBottomSheet(PopupStatus.connection);
+                                  BottomPopup.show(context, PopupStatus.connection);
                                 },
                                 child: const Text(
                                   '파트너 연결이 필요해요.',
@@ -210,8 +195,7 @@ class _HomeScreenState extends State<HomeScreen> with RouteAware, WidgetsBinding
                             if (isLoggedIn && !hasStartCoupleDate) {
                               return GestureDetector(
                                 onTap: () {
-                                  // Navigate to the desired screen when the user does not have a partner
-                                  _showBottomSheet(PopupStatus.coupleInfo);
+                                  BottomPopup.show(context, PopupStatus.coupleInfo);
                                 },
                                 child: const Row(
                                   children: [
