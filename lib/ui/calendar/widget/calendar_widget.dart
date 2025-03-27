@@ -140,7 +140,7 @@ class TableCalendar<T> extends StatefulWidget {
     this.shouldFillViewport = false,
     this.weekNumbersVisible = false,
     this.rowHeight = 52.0,
-    this.daysOfWeekHeight = 16.0,
+    this.daysOfWeekHeight = 33.0,
     this.formatAnimationDuration = const Duration(milliseconds: 200),
     this.formatAnimationCurve = Curves.linear,
     this.pageAnimationDuration = const Duration(milliseconds: 300),
@@ -555,22 +555,24 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
                   ? widget.calendarStyle.markersOffset.end
                   : null,
               child: Container(
-                width: 18, // 원형의 크기
+                width: 18,
                 height: 18,
                 decoration: const BoxDecoration(
                   color: greenColor,
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: Text(
-                    '${events.length}',
-                    style: const TextStyle(
-                      color: whiteColor,
-                      fontSize: 10, // 텍스트 크기
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown, // 텍스트 크기를 자동으로 줄임
+                    child: Text(
+                      '${events.length}',
+                      style: const TextStyle(
+                        color: whiteColor,
+                      ),
                     ),
                   ),
                 ),
-              )
+              ),
             );
           }
 
