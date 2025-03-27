@@ -58,6 +58,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               TableCalendar<Event>(
                 firstDay: firstDay,
                 lastDay: lastDay,
+                locale: "ko-KR",
                 focusedDay: _focusedDay,
                 selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
                 eventLoader: _getEventsForDay,
