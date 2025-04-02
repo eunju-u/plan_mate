@@ -63,6 +63,9 @@ class DefaultFirebaseOptions {
     messagingSenderId: '620563571996',
     projectId: 'planmate-6a840',
     storageBucket: 'planmate-6a840.firebasestorage.app',
+    androidClientId: '620563571996-jabtq7ui3rck3cj3cllgoso9s8qt1egm.apps.googleusercontent.com',
+    iosClientId: '620563571996-87kv33i7bheug35qjav5r7u896ptuedu.apps.googleusercontent.com',
     iosBundleId: 'com.example.planMate',
   );
+
 }
