@@ -42,19 +42,23 @@ class AuthService {
       User user = userCredential.user!;
       String email = user.email ?? "";
 
-      String code = await generateCopyCode();
+      // Firestore에서 사용자 존재 여부 확인
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(email).get();
+      if (!userDoc.exists) {
+        String code = await generateCopyCode();
 
-      // Firestore에 사용자 정보 저장
-      await _firestore.collection('users').doc(email).set({
-        'copyCode': code,
-        'partner': null,
-        'createdDate': FieldValue.serverTimestamp(), // 서버 시간으로 설정
-        'nickName': "",
-        'birthDay': null,
-        'startCoupleDate': null,
-        'withText': "행복하자",
-        'schedules': []
-      });
+        // Firestore에 사용자 정보 저장
+        await _firestore.collection('users').doc(email).set({
+          'copyCode': code,
+          'partner': null,
+          'createdDate': FieldValue.serverTimestamp(), // 서버 시간으로 설정
+          'nickName': "",
+          'birthDay': null,
+          'startCoupleDate': null,
+          'withText': "행복하자",
+          'schedules': []
+        });
+      }
 
       return user;
     } catch (e) {
