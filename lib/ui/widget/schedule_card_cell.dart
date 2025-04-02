@@ -47,12 +47,12 @@ class ScheduleCardCell extends StatelessWidget {
           final String formattedTime = data?.date != null ? formatTimestampToTime(data!.date) : "00:00";
 
           return GestureDetector(
-            onTap: (){
+            onTap: () {
               //TODO eunjulee
               if (context.mounted) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ScheduleSetScreen(data : data, dateTime: data?.date)),
+                  MaterialPageRoute(builder: (context) => ScheduleSetScreen(data: data, dateTime: data?.date)),
                 );
               }
             },
@@ -70,7 +70,6 @@ class ScheduleCardCell extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               data?.content ?? "",
@@ -79,12 +78,14 @@ class ScheduleCardCell extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                                 color: greenColor,
                               ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
                             ),
                             const SizedBox(height: 4),
                             Text(
                               formattedTime,
                               style: const TextStyle(
-                                fontSize: 14,
+                                fontSize: 13,
                                 color: Colors.black87,
                               ),
                             ),
