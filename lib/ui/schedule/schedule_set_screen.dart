@@ -193,7 +193,7 @@ class _ScheduleSetScreenState extends State<ScheduleSetScreen> {
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      '알려주기 허용하기',
+                      '알림받기 허용하기',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
