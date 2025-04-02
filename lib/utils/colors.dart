@@ -6,6 +6,7 @@ const Color darkGrayColor = Color(0x47f8eed1);
 const Color limeColor = Color(0xFFF1F3C2);
 const Color whiteColor = Colors.white;
 const Color lightGrayColor = Color(0xFF9E9E9E);
+const Color lightGrayColor2 = Color(0xFFEBEBEB);
 const Color lightLimeColor = Color(0xFFFBF4DB);
 const Color lightBeigeColor = Color(0xFFF0ECE3);
 const Color orangeColor = Color(0xFFF96E2A);

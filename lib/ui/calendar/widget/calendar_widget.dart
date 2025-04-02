@@ -554,6 +554,7 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
               end: widget.calendarStyle.markersAutoAligned
                   ? widget.calendarStyle.markersOffset.end
                   : null,
+              //캘린더 일정 갯수
               child: Container(
                 width: 18,
                 height: 18,

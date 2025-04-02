@@ -2,40 +2,10 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 
-class Event {
-  final String title;
-
-  const Event(this.title);
-
-  @override
-  String toString() => title;
-}
 
 final today = DateTime.now();
 final firstDay = DateTime(today.year - 10, today.month, today.day);
 final lastDay = DateTime(today.year + 10, today.month, today.day);
-
-final kEvents = LinkedHashMap<DateTime, List<Event>>(
-  equals: isSameDay,
-  hashCode: getHashCode,
-)..addAll(_kEventSource);
-
-final _kEventSource = {
-  for (var item in List.generate(50, (index) => index)) DateTime.utc(firstDay.year, firstDay.month, item * 5): List.generate(item % 4 + 1, (index) => Event('Event $item | ${index + 1}'))
-}..addAll({
-    today: [
-      const Event('Today\'s Event 1'),
-      const Event('Today\'s Event 2'),
-      const Event('Today\'s Event 3'),
-      const Event('Today\'s Event 4'),
-      const Event('Today\'s Event 5'),
-      const Event('Today\'s Event 6'),
-      const Event('Today\'s Event 7'),
-      const Event('Today\'s Event 8'),
-      const Event('Today\'s Event 9'),
-      const Event('Today\'s Event 10'),
-    ],
-  });
 
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
@@ -50,11 +20,6 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
   );
 }
 
-
-
-
-
-/////////
 enum CalendarFormat { month, twoWeeks, week }
 
 typedef DayBuilder = Widget? Function(BuildContext context, DateTime day);

@@ -5,6 +5,9 @@ import 'package:plan_mate/utils/calendar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:plan_mate/utils/colors.dart';
 
+import '../data/schedule_card_data.dart';
+import '../service/auth_service.dart';
+
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
 
@@ -13,109 +16,102 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  late final ValueNotifier<List<Event>> _selectedEvents;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  final AuthService _authService = AuthService();
+  List<ScheduleData> _selectedSchedules = []; // 선택한 날짜의 일정 저장
+  List<ScheduleData> _schedules = []; // 일정 데이터를 저장할 리스트
+  bool _isLoading = false; // 로딩 상태 추가
 
   @override
   void initState() {
     super.initState();
-
     _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    _fetchSchedulesForMonth(_selectedDay!);
   }
 
-  @override
-  void dispose() {
-    _selectedEvents.dispose();
-    super.dispose();
+  // 한 달치 일정 가져오기
+  void _fetchSchedulesForMonth(DateTime targetMonth) async {
+    setState(() {
+      _isLoading = true; // 로딩 시작
+    });
+
+    final schedules = await _authService.getSchedulesForMonth(targetMonth);
+    setState(() {
+      _schedules = schedules;
+      _selectedSchedules = _getEventsForDay(_selectedDay!);
+      _isLoading = false; // 로딩 종료
+    });
   }
 
-  List<Event> _getEventsForDay(DateTime day) {
-    return kEvents[day] ?? [];
+  // 특정 날짜의 일정 필터링
+  List<ScheduleData> _getEventsForDay(DateTime day) {
+    return _schedules.where((schedule) {
+      return isSameDay(schedule.date, day);
+    }).toList();
   }
 
+  // 날짜 선택 시 일정 업데이트
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
+        _selectedSchedules = _getEventsForDay(selectedDay);
       });
-
-      _selectedEvents.value = _getEventsForDay(selectedDay);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return SafeArea(
       child: ScrollConfiguration(
         behavior: const ScrollBehavior().copyWith(overscroll: false),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              TableCalendar<Event>(
+              TableCalendar<ScheduleData>(
                 firstDay: firstDay,
                 lastDay: lastDay,
                 locale: "ko-KR",
                 focusedDay: _focusedDay,
                 selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                eventLoader: _getEventsForDay,
+                eventLoader: (day) => _getEventsForDay(day),
                 startingDayOfWeek: StartingDayOfWeek.sunday,
-                calendarStyle: const CalendarStyle(
-                  outsideDaysVisible: false,
-                ),
+                calendarStyle: const CalendarStyle(outsideDaysVisible: false),
                 onDaySelected: _onDaySelected,
                 onPageChanged: (focusedDay) {
                   _focusedDay = focusedDay;
+                  _fetchSchedulesForMonth(focusedDay); // 달 변경 시 일정 갱신
                 },
               ),
               const SizedBox(height: 8.0),
-              ValueListenableBuilder<List<Event>>(
-                valueListenable: _selectedEvents,
-                builder: (context, value, _) {
-                  return ListView.builder(
-                    shrinkWrap: true, // ListView의 높이를 제한
-                    physics: const NeverScrollableScrollPhysics(), // ListView가 스크롤하지 않도록 설정
-
-                    itemCount: value.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 4.0,
-                        ),
-                        constraints: const BoxConstraints(minHeight: 50),
-                        decoration: BoxDecoration(color: const Color(0xFFFFFFFF), borderRadius: BorderRadius.circular(10.0), border: Border.all(width: 1.0, color: const Color(0x99dfd7f3))),
-                        child: ListTile(
-                          title: Text('${value[index]}',
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: greenColor,
-                                height: 1,
-                              )),
-                        ),
-                      );
-
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 4.0,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: ListTile(
-                          onTap: () => print('${value[index]}'),
-                          title: Text('${value[index]}'),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
+              if (_isLoading) // 로딩 상태에 따른 인디케이터 표시
+                const Center(
+                  child: CircularProgressIndicator(),
+                )
+              else
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: _selectedSchedules.length,
+                  itemBuilder: (context, index) {
+                    final content = _selectedSchedules[index].content;
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                      constraints: const BoxConstraints(minHeight: 50),
+                      decoration: BoxDecoration(color: const Color(0xFFFFFFFF), borderRadius: BorderRadius.circular(10.0), border: Border.all(width: 1.0, color: limeColor)),
+                      child: ListTile(
+                        title: Text(content,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: greenColor,
+                              height: 1,
+                            )),
+                      ),
+                    );
+                  },
+                ),
             ],
           ),
         ),

@@ -393,7 +393,7 @@ class AuthService {
     }
   }
 
-  // 일정 리스트 get
+  // 특정 일자 일정 리스트 get
   Future<List<ScheduleData>> getSchedulesByDate(DateTime targetDate) async {
     try {
       final docSnapshot = await getUserDocument();
@@ -428,8 +428,37 @@ class AuthService {
           .map((doc) => ScheduleData.fromFirestore(doc)) // ScheduleData.fromFirestore는 Firestore에서 가져온 데이터를 ScheduleData 객체로 변환하는 함수
           .toList();
     } catch (e) {
-      print('ejlee5 Error fetching schedules by date: $e');
+      log("AuthService", "getSchedulesByDate", "Error fetching schedules by date: $e");
       return []; // 에러가 발생하면 빈 리스트 반환
+    }
+  }
+
+  // 특정 달 일정 리스트 get
+  Future<List<ScheduleData>> getSchedulesForMonth(DateTime targetMonth) async {
+    try {
+      // 현재 로그인한 사용자 가져오기
+      User? user = await getCurrentUser();
+      if (user == null) return [];
+      String userEmail = user.email!;
+
+      // 월의 시작과 끝을 구하기
+      DateTime startOfMonth = DateTime(targetMonth.year, targetMonth.month, 1);
+      DateTime endOfMonth = DateTime(targetMonth.year, targetMonth.month + 1, 0, 23, 59, 59);
+
+      // Firestore에서 특정 월에 해당하는 일정 가져오기
+      final querySnapshot = await _firestore
+          .collection('schedules')
+          .where('participants', arrayContains: userEmail) // 사용자가 포함된 일정만 필터링
+          .where('date', isGreaterThanOrEqualTo: startOfMonth) // 월의 시작
+          .where('date', isLessThanOrEqualTo: endOfMonth) // 월의 끝
+          .orderBy('date', descending: false) // 날짜 기준 정렬
+          .get();
+
+      // 쿼리 결과를 ScheduleData 리스트로 변환
+      return querySnapshot.docs.map((doc) => ScheduleData.fromFirestore(doc)).toList();
+    } catch (e) {
+      log("AuthService", "getSchedulesByDate", "Error fetching schedules by date: $e");
+      return [];
     }
   }
 }
