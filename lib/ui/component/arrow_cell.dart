@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 class ArrowCell extends StatelessWidget {
   final String title;
+  final double textSize;
   final Function onTap;
 
-  const ArrowCell({super.key, required this.title, required this.onTap});
+  const ArrowCell({super.key, required this.title, this.textSize = 14, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +15,7 @@ class ArrowCell extends StatelessWidget {
         onTap();
       },
       child: AnimatedContainer(
-        padding: const EdgeInsets.only(
-          left: 25,
-          right: 25,
-          top: 20,
-          bottom: 20
-        ),
+        padding: const EdgeInsets.only(left: 15, right: 15, top: 20, bottom: 20),
         constraints: const BoxConstraints(
           minHeight: 40,
         ),
@@ -34,8 +30,8 @@ class ArrowCell extends StatelessWidget {
                 child: Text(
                   title,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 16,
+                  style: TextStyle(
+                    fontSize: textSize,
                     height: 1.2, // 높이 조정
                     color: Colors.black,
                     fontFamily: "400m",

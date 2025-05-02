@@ -47,6 +47,7 @@ dependencies:
   tab_container: ^3.5.3
   provider: ^6.0.5
   omni_datetime_picker: ^1.1.0
+  package_info_plus: ^8.0.2
 
 dev_dependencies:
   flutter_test:
