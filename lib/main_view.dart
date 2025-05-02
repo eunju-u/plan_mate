@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:plan_mate/ui/calendar/calendar_screen.dart';
 import 'package:plan_mate/ui/home/home_screen.dart';
+import 'package:plan_mate/ui/more/more_screen.dart';
 import 'package:plan_mate/ui/splash/splash_view.dart';
 import 'package:plan_mate/utils/colors.dart';
 
@@ -48,6 +49,7 @@ class _BottomNavBar extends State<BottomNavBar> {
   final List<Widget> _pages = [
     const HomeScreen(),
     const CalendarScreen(),
+    const MoreScreen(),
   ];
 
   void _onTabTapped(int index) {
@@ -71,6 +73,10 @@ class _BottomNavBar extends State<BottomNavBar> {
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
             label: '캘린더',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.grid_view),
+            label: '더보기',
           ),
         ],
       ),
