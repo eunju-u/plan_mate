@@ -41,9 +41,9 @@ class ScheduleCardCell extends StatelessWidget {
     return FutureBuilder<Map<String, dynamic>>(
         future: _isCreatorCurrentUser(authService, data?.creator),
         builder: (context, snapshot) {
-          final String creatorText = snapshot.data?['nickname'] ?? '';
-          final bool isCreatorCurrentUser = snapshot.data?['isCurrentUser'] ?? false;
-          final Color textColor = isCreatorCurrentUser ? lightLimeColor : lightBeigeColor;
+          final String nickname = snapshot.data?['nickname'] ?? '';
+          final bool isCurrentUser = snapshot.data?['isCurrentUser'] ?? false;
+          final Color textColor = isCurrentUser ? lightLimeColor : lightBeigeColor;
           final String formattedTime = data?.date != null ? formatTimestampToTime(data!.date) : "00:00";
 
           return GestureDetector(
@@ -69,33 +69,29 @@ class ScheduleCardCell extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          children: [
-                            Text(
-                              data?.content ?? "",
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: greenColor,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              formattedTime,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          data?.content ?? "",
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: greenColor,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          formattedTime,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.black87,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   Container(width: 3),
-                  Tag(color: textColor, text: creatorText),
+                  Tag(color: textColor, text: nickname),
                 ],
               ),
             ),

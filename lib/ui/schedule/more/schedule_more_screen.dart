@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 import '../../../enums/schedule_status.dart';
 import '../../../main_view.dart';
 import '../../../utils/colors.dart';
+import '../../../utils/custom_toast.dart';
 import '../../../utils/log.dart';
 import '../../data/schedule_card_data.dart';
+import '../../service/auth_service.dart';
 import '../../widget/header.dart';
 import '../../widget/schedule_card_cell.dart';
 import '../schedule_set_screen.dart';
@@ -28,6 +30,8 @@ class ScheduleMoreScreen extends StatefulWidget {
 }
 
 class _ScheduleMoreScreenState extends State<ScheduleMoreScreen> with RouteAware, WidgetsBindingObserver {
+  final AuthService _authService = AuthService();
+
   @override
   void initState() {
     super.initState();
@@ -92,7 +96,40 @@ class _ScheduleMoreScreenState extends State<ScheduleMoreScreen> with RouteAware
                   shrinkWrap: true,
                   itemCount: list.length,
                   itemBuilder: (context, index) {
-                    return ScheduleCardCell(data: list[index]);
+                    return Dismissible(
+                      key: Key(list[index].id),
+                      // 각 항목의 고유 키 필요
+                      direction: DismissDirection.endToStart,
+                      // 오른쪽에서 왼쪽으로 스와이프
+                      background: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red, // 스와이프 배경 색상
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20),
+                        child: const Icon(
+                          Icons.delete, // 휴지통 아이콘
+                          color: Colors.white,
+                        ),
+                      ),
+                      onDismissed: (direction) {
+                        // 삭제하려는 항목을 미리 저장
+                        final deletedItem = list[index];
+
+                        // 리스트에서 항목 제거
+                        setState(() {
+                          _authService.deleteSchedule(deletedItem.id);
+                          list.removeAt(index);
+                        });
+
+                        showCustomToast(context, '삭제됨: ${deletedItem.content}');
+                        // ScaffoldMessenger.of(context).showSnackBar(
+                        //   SnackBar(content: Text('삭제됨: ${list[index].content}')),
+                        // );
+                      },
+                      child: ScheduleCardCell(data: list[index]), // 기존 위젯
+                    );
                   },
                   separatorBuilder: (BuildContext context, int index) {
                     return const SizedBox(height: 8);

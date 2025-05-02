@@ -8,6 +8,12 @@ import 'package:plan_mate/utils/log.dart';
 import '../data/schedule_card_data.dart';
 
 class AuthService {
+  // 싱글턴 인스턴스
+  static final AuthService _instance = AuthService._internal();
+  factory AuthService() => _instance;
+
+  AuthService._internal(); // private 생성자
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -89,7 +95,7 @@ class AuthService {
     return code;
   }
 
-  // 내 정보 입력
+  /// 내 정보 입력
   Future<void> setMyInfo(String nickName, DateTime birthDay) async {
     User? user = await getCurrentUser();
     if (user == null) return;
@@ -101,7 +107,7 @@ class AuthService {
     });
   }
 
-  // 내 정보 입력
+  /// 내 정보 입력
   Future<void> setCoupleInfo(DateTime startCoupleDate) async {
     User? user = await getCurrentUser();
     if (user == null) return;
@@ -158,7 +164,7 @@ class AuthService {
     return data?['partner'] ?? "";
   }
 
-  // 상대방의 nickName을 가져오는 함수
+  /// 상대방의 nickName을 가져오는 함수
   Future<String> getPartnerNickName() async {
     try {
       // 현재 로그인된 사용자의 partner 이메일을 가져옴
@@ -184,7 +190,7 @@ class AuthService {
     }
   }
 
-  // 상대방의 커플 날짜 가져오는 함수
+  /// 상대방의 커플 날짜 가져오는 함수
   Future<Timestamp?> getPartnerStartCoupleDate() async {
     try {
       // 현재 로그인된 사용자의 partner 이메일을 가져옴
@@ -212,7 +218,7 @@ class AuthService {
     }
   }
 
-  // 커플된 날짜
+  /// 커플된 날짜
   Future<Timestamp?> getStartCoupleDate() async {
     final docSnapshot = await getUserDocument();
     if (docSnapshot == null) return null;
@@ -226,7 +232,7 @@ class AuthService {
     return data['startCoupleDate'];
   }
 
-  // 문구
+  /// 문구
   Future<String?> getWithText() async {
     final docSnapshot = await getUserDocument();
     if (docSnapshot == null) return "";
@@ -252,7 +258,7 @@ class AuthService {
     await _googleSignIn.signOut();
   }
 
-  // 상대방의 copyCode로 연결
+  /// 상대방의 copyCode로 연결
   Future<bool> connectPartner(String inputCopyCode) async {
     try {
       // 현재 로그인한 사용자 ID
@@ -305,7 +311,7 @@ class AuthService {
   //   });
   // }
 
-  // schedules 컬렉션에서 데이터를 가져오기
+  /// schedules 컬렉션에서 데이터를 가져오기
   Future<List<ScheduleData>> getSchedules() async {
     try {
       final docSnapshot = await getUserDocument();
@@ -324,7 +330,7 @@ class AuthService {
     }
   }
 
-  //일정 추가
+  /// 일정 추가
   Future<void> addSchedule(String content, DateTime date, bool isRequestPartner, bool isReceivePush) async {
     try {
       User? user = await getCurrentUser();
@@ -393,7 +399,7 @@ class AuthService {
     }
   }
 
-  // 특정 일자 일정 리스트 get
+  /// 특정 일자 일정 리스트 get
   Future<List<ScheduleData>> getSchedulesByDate(DateTime targetDate) async {
     try {
       final docSnapshot = await getUserDocument();
@@ -433,7 +439,7 @@ class AuthService {
     }
   }
 
-  // 특정 달 일정 리스트 get
+  /// 특정 달 일정 리스트 get
   Future<List<ScheduleData>> getSchedulesForMonth(DateTime targetMonth) async {
     try {
       // 현재 로그인한 사용자 가져오기
@@ -459,6 +465,37 @@ class AuthService {
     } catch (e) {
       log("AuthService", "getSchedulesByDate", "Error fetching schedules by date: $e");
       return [];
+    }
+  }
+
+  /// 일정 삭제
+  Future<void> deleteSchedule(String scheduleId) async {
+    try {
+
+      User? user = await getCurrentUser();
+      if (user == null) return;
+
+      String userEmail = user.email!;
+      String partnerEmail = await getPartner();
+      if (partnerEmail.isEmpty) {
+        log("AuthService", "deleteSchedule", "파트너가 없습니다.");
+        return;
+      }
+
+      // (user의 schedules가 문서 내부의 배열 필드라 배열 필드에서 특정 값을 삭제하려면 FieldValue.arrayRemove()를 사용)
+      await _firestore.collection('users').doc(userEmail).update({
+        'schedules': FieldValue.arrayRemove([scheduleId]),
+      });
+
+      // 상대방의 schedules에서도 scheduleId 제거
+      await _firestore.collection('users').doc(partnerEmail).update({
+        'schedules': FieldValue.arrayRemove([scheduleId]),
+      });
+
+      await _firestore.collection('schedules').doc(scheduleId).delete();
+      log("AuthService", "deleteSchedule", "일정 삭제 완료");
+    } catch (e) {
+      log("AuthService", "deleteSchedule", "일정 삭제 에러 : $e");
     }
   }
 }
