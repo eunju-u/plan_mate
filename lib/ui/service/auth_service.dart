@@ -10,6 +10,7 @@ import '../data/schedule_card_data.dart';
 class AuthService {
   // 싱글턴 인스턴스
   static final AuthService _instance = AuthService._internal();
+
   factory AuthService() => _instance;
 
   AuthService._internal(); // private 생성자
@@ -32,7 +33,7 @@ class AuthService {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       // 사용자가 로그인 창을 닫거나 취소한 경우
       if (googleUser == null) {
-        _signOut();
+        signOut();
         return null; // 로그인 취소 처리
       }
 
@@ -253,7 +254,7 @@ class AuthService {
     return await getStartCoupleDate() != null;
   }
 
-  void _signOut() async {
+  void signOut() async {
     await _auth.signOut();
     await _googleSignIn.signOut();
   }
@@ -296,6 +297,37 @@ class AuthService {
     } catch (e) {
       log("AuthService", "connectPartner", "파트너 연결 중 오류 발생: $e");
       return false;
+    }
+  }
+
+  /// 사용자 계정 삭제
+  Future<void> deleteUser() async {
+    try {
+      // 현재 로그인된 사용자 가져오기
+      User? user = _auth.currentUser;
+
+      if (user != null) {
+        String? email = user.email;
+        try {
+          QuerySnapshot snapshot = await _firestore.collection('users').where('email', isEqualTo: email).get();
+
+          // 사용자 문서가 있으면 삭제
+          for (var doc in snapshot.docs) {
+            await doc.reference.delete();
+            log("AuthService", "deleteUser", "Firestore Email의 데이터가 삭제되었습니다.");
+          }
+        } catch (e) {
+          log("AuthService", "deleteUser", "Firestore Email의 데이터 삭제 실패: $e");
+          rethrow;
+        }
+
+        // email 지우기
+        await _firestore.collection('users').doc(email).delete();
+        log("AuthService", "deleteUser", "Firestore email이 삭제되었습니다.");
+      }
+    } catch (e) {
+      log("AuthService", "deleteUser", "Firestore email이 삭제 실패: $e");
+      rethrow;
     }
   }
 
@@ -471,7 +503,6 @@ class AuthService {
   /// 일정 삭제
   Future<void> deleteSchedule(String scheduleId) async {
     try {
-
       User? user = await getCurrentUser();
       if (user == null) return;
 

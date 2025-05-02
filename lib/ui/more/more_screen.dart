@@ -1,9 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plan_mate/ui/component/arrow_cell.dart';
 import 'package:plan_mate/ui/more/profile_update_screen.dart';
 
+import '../../utils/colors.dart';
 import '../component/header_bar.dart';
+import '../info/info_screen.dart';
 import '../service/auth_service.dart';
 
 class MoreScreen extends StatefulWidget {
@@ -20,10 +21,10 @@ class _MoreScreenState extends State<MoreScreen> {
   @override
   void initState() {
     super.initState();
-    getNickName();
+    checkLoginStatus();
   }
 
-  void getNickName() async {
+  void checkLoginStatus() async {
     String fetchedNickName = await _authService.getNickName();
     setState(() {
       nickName = fetchedNickName;
@@ -38,17 +39,21 @@ class _MoreScreenState extends State<MoreScreen> {
         child: Column(
           children: [
             ArrowCell(
-              title: nickName,
+              title: nickName.isNotEmpty ? nickName : "내 정보 입력이 필요해요.",
+              textSize: 16,
               onTap: () {
-                MaterialPageRoute(builder: (context) => const ProfileUpdateScreen());
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => nickName.isNotEmpty ? const ProfileUpdateScreen() : const InfoScreen()),
+                );
               },
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15), // 좌우 15
               child: Container(
-                height: 1, // 선의 두께
-                color: Colors.grey, // 선의 색상
-              ),
+                  height: 1, // 선의 두께
+                  color: lightGrayColor2 // 선의 색상
+                  ),
             )
           ],
         ),

@@ -128,11 +128,25 @@ class _SettingScreen extends State<SettingScreen> {
             ArrowCell(
               title: "로그아웃",
               onTap: () {
+                _authService.signOut();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                      (route) => false, // 모든 이전 화면 제거
+                );
               },
             ),
             ArrowCell(
               title: "회원탈퇴",
               onTap: () {
+                showSecessionCenterPopup(context, onConfirmTapFunc: () {
+                  _authService.deleteUser();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                        (route) => false, // 모든 이전 화면 제거
+                  );
+                });
               },
             ),
           ],
