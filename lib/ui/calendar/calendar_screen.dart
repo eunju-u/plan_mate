@@ -5,6 +5,7 @@ import 'package:plan_mate/utils/calendar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:plan_mate/utils/colors.dart';
 
+import '../../utils/custom_toast.dart';
 import '../data/schedule_card_data.dart';
 import '../service/auth_service.dart';
 
@@ -92,22 +93,52 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 )
               else
                 ListView.builder(
+                  padding: const EdgeInsets.only(left: 15, right: 15),
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: _selectedSchedules.length,
                   itemBuilder: (context, index) {
-                    final content = _selectedSchedules[index].content;
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                      constraints: const BoxConstraints(minHeight: 50),
-                      decoration: BoxDecoration(color: const Color(0xFFFFFFFF), borderRadius: BorderRadius.circular(10.0), border: Border.all(width: 1.0, color: limeColor)),
-                      child: ListTile(
-                        title: Text(content,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: greenColor,
-                              height: 1,
-                            )),
+                    final schedule = _selectedSchedules[index];
+                    return Dismissible(
+                      key: Key(schedule.id),
+                      // 각 항목의 고유 키 필요
+                      direction: DismissDirection.endToStart,
+                      // 오른쪽에서 왼쪽으로 스와이프
+                      background: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.red, // 스와이프 배경 색상
+                          borderRadius: BorderRadius.circular(12)
+                        ),
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 20),
+                        child: const Icon(
+                          Icons.delete, // 휴지통 아이콘
+                          color: Colors.white,
+                        ),
+                      ),
+                      onDismissed: (direction) {
+                        final deletedItem = _selectedSchedules[index];
+
+                        // 리스트에서 항목 제거 및 추가 동작
+                        setState(() {
+                          _authService.deleteSchedule(deletedItem.id);
+                          _selectedSchedules.removeAt(index);
+                        });
+
+                        showCustomToast(context, '삭제됨: ${deletedItem.content}');
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        constraints: const BoxConstraints(minHeight: 50),
+                        decoration: BoxDecoration(color: const Color(0xFFFFFFFF), borderRadius: BorderRadius.circular(12.0), border: Border.all(width: 1.0, color: limeColor)),
+                        child: ListTile(
+                          title: Text(schedule.content,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: greenColor,
+                                height: 1,
+                              )),
+                        ),
                       ),
                     );
                   },
