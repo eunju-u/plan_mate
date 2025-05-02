@@ -5,7 +5,7 @@ import 'package:plan_mate/utils/calendar_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:plan_mate/utils/colors.dart';
 
-import '../../utils/custom_toast.dart';
+import '../component/custom_toast.dart';
 import '../data/schedule_card_data.dart';
 import '../service/auth_service.dart';
 

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../enums/schedule_status.dart';
 import '../../../main_view.dart';
 import '../../../utils/colors.dart';
-import '../../../utils/custom_toast.dart';
+import '../../component/custom_toast.dart';
 import '../../../utils/log.dart';
 import '../../data/schedule_card_data.dart';
 import '../../service/auth_service.dart';

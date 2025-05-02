@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'colors.dart';
+import '../../utils/colors.dart';
 
 void showCustomToast(BuildContext context, String message) {
   OverlayEntry overlayEntry;
